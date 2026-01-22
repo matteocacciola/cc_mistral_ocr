@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from cat.mad_hatter.decorators import plugin
+from cat import plugin
 
 
 # Plugin settings
@@ -11,4 +11,4 @@ class PluginSettings(BaseModel):
 # hook to give the cat settings
 @plugin
 def settings_schema():
-    return PluginSettings.schema()
+    return PluginSettings.model_json_schema()
