@@ -1,6 +1,6 @@
 # ⚡ Mistral OCR
 
-**Mistral OCR** is a plugin that permit to integrate the OCR model of Mistral AI into Cheshire Cat
+**Mistral OCR** is a plugin that permit to integrate the OCR model of Mistral AI into Grinning Cat.
 
 ### Plugin Configuration
 
