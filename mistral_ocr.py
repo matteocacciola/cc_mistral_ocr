@@ -33,7 +33,7 @@ async def ocr(
     ocr_input: OCRInput,
     info: AuthorizedInfo = check_permissions(AuthResource.MEMORY, AuthPermission.DELETE),
 ) -> str:
-    settings = info.cheshire_cat.mad_hatter.get_plugin().load_settings()
+    settings = await info.cheshire_cat.mad_hatter.get_plugin().load_settings()
     api_key = settings["mistral_api_key"]
     save_rh = settings["save_text_to_rabbit_hole"]
 
@@ -93,7 +93,7 @@ async def ocr_pdf(
     info: AuthorizedInfo = check_permissions(AuthResource.MEMORY, AuthPermission.DELETE),
 ) -> str:
     original_filename = ocr_input.filename
-    settings = info.cheshire_cat.mad_hatter.get_plugin().load_settings()
+    settings = await info.cheshire_cat.mad_hatter.get_plugin().load_settings()
     api_key = settings["mistral_api_key"]
     save_rh = settings["save_text_to_rabbit_hole"]
 
