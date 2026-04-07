@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from cat.auth.connection import AuthorizedInfo
 from cat.exceptions import CustomValidationException
 from cat.log import log
@@ -65,8 +67,7 @@ async def ocr(
                 # Nome del file di output
                 output_file = "ocrpage.md"
                 markdown_content = page.get("markdown", "")  # Access markdown safely
-                with open(output_file, "w", encoding="utf-8") as f:
-                    f.write(markdown_content)
+                Path(output_file).write_text(markdown_content, encoding="utf-8")
 
                 metadata = {item.name: item.value for item in ocr_input.tags}
                 await info.lizard.rabbit_hole.ingest_file(cat=info.cheshire_cat, file=output_file, metadata=metadata)
@@ -79,7 +80,7 @@ async def ocr(
     except json.JSONDecodeError as e:
         if response is not None:
             log.debug(
-                f"Error decoding JSON response: {e}. Response text: {response.text if 'response' in locals() else 'No response'}"
+                f"Error decoding JSON response: {e}. Response text: {response.text}"
             )
         raise CustomValidationException(f"Error decoding JSON response: {e}")
     except Exception as e:
@@ -122,8 +123,7 @@ async def ocr_pdf(
         if save_rh:
             for i, page in enumerate(ocr_response.get("pages", [])):
                 output_file = f"{original_filename}_{i}.md"
-                with open(output_file, "w", encoding="utf-8") as f:
-                    f.write(page.get("markdown", ""))
+                Path(output_file).write_text(page.get("markdown", ""), encoding="utf-8")
 
                 metadata = {item.name: item.value for item in ocr_input.tags}
                 await info.lizard.rabbit_hole.ingest_file(cat=info.cheshire_cat, file=output_file, metadata=metadata)
@@ -135,7 +135,7 @@ async def ocr_pdf(
 
 
 def upload_pdf(api_key: str, filename: str) -> str:
-    files = {"file": open(filename, "rb")}
+    files = {"file": (Path(filename).name, Path(filename).read_bytes())}
     data = {"purpose": "ocr"}
     headers = {"Authorization": f"Bearer {api_key}"}
     response = requests.post(
